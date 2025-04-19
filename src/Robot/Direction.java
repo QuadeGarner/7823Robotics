@@ -6,5 +6,5 @@ package Robot;
  *Apr 17, 2025
  */
 public enum Direction {
-	FORWARD, BACKWARDS, LEFT, RIGHT;
+	FORWARD, BACKWARDS;
 }
