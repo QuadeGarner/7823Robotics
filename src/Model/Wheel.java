@@ -12,6 +12,7 @@ public class Wheel {
 	
 	public Wheel(double r) {
 		this.radius = r;
+		this.circumfice = Math.PI * 2* radius;
 	}
 	// getter and setters
 	public double getRadius() {
