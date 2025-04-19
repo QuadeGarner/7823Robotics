@@ -289,8 +289,8 @@ public class Robot {
         double distance = strafePower * motor1.getCircumfice() * time;
 
         double angleRad = Math.toRadians(robotAngle + 90);
-        double dx = distance * Math.cos(angleRad);
-        double dy = distance * Math.sin(angleRad);
+        double dx = distance * Math.sin(angleRad);
+        double dy = distance * Math.cos(angleRad);
 
         robotX += dx;
         robotY += dy;

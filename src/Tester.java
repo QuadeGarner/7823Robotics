@@ -13,12 +13,12 @@ public class Tester {
        robot.resetRobot();
        robot.setMotor1Dir(Direction.BACKWARDS);
        robot.setMotor4Dir(Direction.BACKWARDS);
-       System.out.println("Strafe Right Movement Test");
+       System.out.println("Strafe Left Movement Test");
        robot.updatePosition(15);
        System.out.println("Robot Position: (" + robot.getRobotX() + ", " + robot.getRobotY() + " "+robot.getRobotAngle()+" "+robot.getRobotHeading()+")");
        robot.resetRobot();
        System.out.println();
-       System.out.println("Strafe Left Movement Test");
+       System.out.println("Strafe Right Movement Test");
        robot.setMotor2Dir(Direction.BACKWARDS);
        robot.setMotor3Dir(Direction.BACKWARDS);
        robot.updatePosition(15);
