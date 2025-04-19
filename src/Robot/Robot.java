@@ -7,6 +7,7 @@ package Robot;
  */
 public class Robot {
 	private double pose;
+	// motors in the order left top 1 right top 2 left bottom 3 right bottom 4
 	private Motor motor1;
 	private Motor motor2;
 	private Motor motor3;
