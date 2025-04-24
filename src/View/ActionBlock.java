@@ -142,7 +142,7 @@ public class ActionBlock extends JPanel {
         try {
             switch (action) {
                 case "Move":
-                    int time = Integer.parseInt(inputField.getText().trim());
+                    double time = Double.parseDouble(inputField.getText().trim());
                     robot.updatePosition(time);
                     field.repaint();
                     break;

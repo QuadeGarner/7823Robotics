@@ -223,7 +223,7 @@ public class Robot {
     }
 
     // Methods
-    public void updatePosition(int time) {
+    public void updatePosition(double time) {
         strafe(time);
         turnInPlace(time);
         pivot(time);
@@ -274,7 +274,7 @@ public class Robot {
         }
     }
 
-    private void turnInPlace(int time) {
+    private void turnInPlace(double time) {
         double leftAvg = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
                 (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1))) / 2;
         double rightAvg = ((motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) +
@@ -289,7 +289,7 @@ public class Robot {
         }
     }
 
-    private void pivot(int time) {
+    private void pivot(double time) {
         boolean leftStationary = motor1.getPower() == 0 && motor3.getPower() == 0;
         boolean rightStationary = motor2.getPower() == 0 && motor4.getPower() == 0;
     
@@ -318,7 +318,7 @@ public class Robot {
         }
     }
 
-    private void strafe(int time) {
+    private void strafe(double time) {
         // Calculate strafe power based on motor layout
         double strafePower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
                               (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1)) - 
@@ -337,7 +337,7 @@ public class Robot {
         robotX += dx;
         robotY += dy;
     }
-    private void diagonal(int time) {
+    private void diagonal(double time) {
         // Diagonal movement calculation
         double diagonalPower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
                                 (motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) +
