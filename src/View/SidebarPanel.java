@@ -2,10 +2,10 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import Model.Robot;
 
 public class SidebarPanel extends JPanel {
@@ -13,6 +13,7 @@ public class SidebarPanel extends JPanel {
     private final JPanel blockContainer;
     private final JButton addBlockButton;
     private final JButton runButton;
+    private final JButton resetButton;
     private final java.util.List<ActionBlock> blocks;
     private final Robot robot;
     private final FieldPanel field;
@@ -34,6 +35,7 @@ public class SidebarPanel extends JPanel {
 
         addBlockButton = new JButton("Add Block");
         runButton = new JButton("Run All");
+        resetButton = new JButton("Reset All Blocks");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
@@ -42,6 +44,7 @@ public class SidebarPanel extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+        add(resetButton, BorderLayout.NORTH);
 
         addNewBlock();
 
@@ -55,6 +58,10 @@ public class SidebarPanel extends JPanel {
                 }
             }
         });
+
+        resetButton.addActionListener(e -> resetAllBlocks());
+
+        enableDrop();
     }
 
     private void addNewBlock() {
@@ -63,5 +70,35 @@ public class SidebarPanel extends JPanel {
         blockContainer.add(newBlock);
         blockContainer.revalidate();
         blockContainer.repaint();
+    }
+
+    private void resetAllBlocks() {
+        blocks.clear();
+        blockContainer.removeAll();
+        addNewBlock();
+        robot.resetRobot();
+        field.repaint(); // Repaint the field to reflect the reset state
+        blockContainer.revalidate();
+        blockContainer.repaint();
+    }
+
+    private void enableDrop() {
+        new DropTarget(blockContainer, DnDConstants.ACTION_COPY, new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent event) {
+                try {
+                    event.acceptDrop(DnDConstants.ACTION_COPY);
+
+                    // Simulate dragging by just adding a new ActionBlock
+                    ActionBlock newBlock = new ActionBlock(robot, field);
+                    blocks.add(newBlock);
+                    blockContainer.add(newBlock);
+                    blockContainer.revalidate();
+                    blockContainer.repaint();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, true);
     }
 }

@@ -13,10 +13,10 @@ import View.SidebarPanel;
 public class SimTester {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Robot Simulation");
-        Motor motor1 = new Motor(Direction.FORWARD, 1.0, 2.0);
-        Motor motor2 = new Motor(Direction.FORWARD, 1.0, 2.0);
-        Motor motor3 = new Motor(Direction.FORWARD, 1.0, 2.0);
-        Motor motor4 = new Motor(Direction.FORWARD, 1.0, 2.0);
+        Motor motor1 = new Motor(Direction.FORWARD, 1.0, 1.48);
+        Motor motor2 = new Motor(Direction.FORWARD, 1.0, 1.48);
+        Motor motor3 = new Motor(Direction.FORWARD, 1.0, 1.48);
+        Motor motor4 = new Motor(Direction.FORWARD, 1.0, 1.48);
         Robot robot = new Robot(motor1, motor2, motor3, motor4, 16.0, 16.0, 0.0f, Heading.EAST, 265.0);
         Field field = new Field(144, 144, robot); // Create a field with default dimensions
 

@@ -1,9 +1,9 @@
 package Model;
 
 /**
- *Quade Garner - qmgarner
- *CIS171 20432 
- *Apr 17, 2025
+ * Quade Garner - qmgarner
+ * CIS171 20432
+ * Apr 17, 2025
  */
 public class Robot {
     // Motors in the order: LEFT_TOP, RIGHT_TOP, LEFT_BOTTOM, RIGHT_BOTTOM
@@ -11,17 +11,23 @@ public class Robot {
     private Motor motor2;
     private Motor motor3;
     private Motor motor4;
+    
     // Center of the robot
     private double robotX;
     private double robotY;
     private float robotAngle;
     private double robotSize;
+    
     // Direction the robot is facing
     private Heading robotHeading;
+    
+    // Constant initial position and angle
+    private final double ROBOTX;
+    private final double ROBOTY;
+    private final float ROBOTANGLE;
 
     // Constructors
-
-    public Robot( Motor m1, Motor m2, Motor m3, Motor m4, double x, double y, float angle, Heading heading, double robotSize) {
+    public Robot(Motor m1, Motor m2, Motor m3, Motor m4, double x, double y, float angle, Heading heading, double robotSize) {
         this.motor1 = m1;
         this.motor2 = m2;
         this.motor3 = m3;
@@ -31,6 +37,9 @@ public class Robot {
         this.robotAngle = angle;
         this.robotHeading = heading != null ? heading : Heading.NORTH; // Default to NORTH if null
         this.robotSize = robotSize;
+        this.ROBOTX = x;
+        this.ROBOTY = y;
+        this.ROBOTANGLE = angle;
     }
 
     // Getters and setters
@@ -169,50 +178,56 @@ public class Robot {
     public void setRobotHeading(Heading robotHeading) {
         this.robotHeading = robotHeading;
     }
+
     public void setAllRobotMotorsPower(double power) {
         motor1.setPower(power);
         motor2.setPower(power);
         motor3.setPower(power);
         motor4.setPower(power);
     }
+
     public void setAllRobotMotorsDir(Direction dir) {
         motor1.setDir(dir);
         motor2.setDir(dir);
         motor3.setDir(dir);
         motor4.setDir(dir);
     }
+
     public void setAllRobotMotorsRadius(double radius) {
         motor1.setRadius(radius);
         motor2.setRadius(radius);
         motor3.setRadius(radius);
         motor4.setRadius(radius);
     }
-	public void  resetRobotPosition(double x, double y, float angle) {
-		this.robotX = x;
-		this.robotY = y;
-		this.robotAngle = angle;
-		this.robotHeading = Heading.EAST;
-	}
-	public void  resetRobot() {
-		robotX = 8.0;
-		robotY = 8.0;
-		robotAngle = 0;
-		robotHeading = Heading.EAST;
-		motor1.setPower(1.0);
-		motor2.setPower(1.0);
-		motor3.setPower(1.0);
-		motor4.setPower(1.0);
-		motor1.setDir(Direction.FORWARD);
-		motor2.setDir(Direction.FORWARD);
-		motor3.setDir(Direction.FORWARD);
-		motor4.setDir(Direction.FORWARD);
-	}
+
+    public void resetRobotPosition(double x, double y, float angle) {
+        this.robotX = x;
+        this.robotY = y;
+        this.robotAngle = angle;
+        this.robotHeading = Heading.EAST;
+    }
+
+    public void resetRobot() {
+        robotX = ROBOTX;
+        robotY = ROBOTY;
+        robotAngle = ROBOTANGLE;
+        robotHeading = Heading.EAST;
+        motor1.setPower(1.0);
+        motor2.setPower(1.0);
+        motor3.setPower(1.0);
+        motor4.setPower(1.0);
+        motor1.setDir(Direction.FORWARD);
+        motor2.setDir(Direction.FORWARD);
+        motor3.setDir(Direction.FORWARD);
+        motor4.setDir(Direction.FORWARD);
+    }
 
     // Methods
     public void updatePosition(int time) {
         strafe(time);
         turnInPlace(time);
         pivot(time);
+        diagonal(time);
 
         double[] distances = new double[4];
         Motor[] motors = {motor1, motor2, motor3, motor4};
@@ -226,6 +241,7 @@ public class Robot {
             double distancePerSecond = speed * m.getCircumfice();
             distances[i] = distancePerSecond * time;
         }
+
         double avgForward = (distances[0] + distances[1] + distances[2] + distances[3]) / 4.0;
         double angleRad = Math.toRadians(robotAngle);
         double dx = avgForward * Math.cos(angleRad);
@@ -301,13 +317,12 @@ public class Robot {
             robotAngle += 360;
         }
     }
-    
 
     private void strafe(int time) {
         // Calculate strafe power based on motor layout
         double strafePower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
-                              (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1)) -
-                              (motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) -
+                              (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1)) - 
+                              (motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) - 
                               (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1))) / 4.0;
     
         // Total distance to move in strafe direction
@@ -322,10 +337,26 @@ public class Robot {
         robotX += dx;
         robotY += dy;
     }
+    private void diagonal(int time) {
+        // Diagonal movement calculation
+        double diagonalPower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
+                                (motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) +
+                                (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1)) +
+                                (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1))) / 4.0;
     
-	public String toString() {
-		return String.format("X: %.2f, Y: %.2f, Angle: %.2f°, Heading: %s", 
-			robotX, robotY, robotAngle, robotHeading);
-	}
-	
+        // Determine the direction of the diagonal movement
+        double angleRad = Math.toRadians(robotAngle);
+        
+        double dx = diagonalPower * motor1.getCircumfice() * time * Math.cos(angleRad);
+        double dy = diagonalPower * motor1.getCircumfice() * time * Math.sin(angleRad);
+    
+        // Update robot's position
+        robotX += dx;
+        robotY += dy;
+    }
+
+    public String toString() {
+        return String.format("X: %.2f, Y: %.2f, Angle: %.2f°, Heading: %s", 
+            robotX, robotY, robotAngle, robotHeading);
+    }
 }
