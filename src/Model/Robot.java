@@ -169,6 +169,24 @@ public class Robot {
     public void setRobotHeading(Heading robotHeading) {
         this.robotHeading = robotHeading;
     }
+    public void setAllRobotMotorsPower(double power) {
+        motor1.setPower(power);
+        motor2.setPower(power);
+        motor3.setPower(power);
+        motor4.setPower(power);
+    }
+    public void setAllRobotMotorsDir(Direction dir) {
+        motor1.setDir(dir);
+        motor2.setDir(dir);
+        motor3.setDir(dir);
+        motor4.setDir(dir);
+    }
+    public void setAllRobotMotorsRadius(double radius) {
+        motor1.setRadius(radius);
+        motor2.setRadius(radius);
+        motor3.setRadius(radius);
+        motor4.setRadius(radius);
+    }
 	public void  resetRobotPosition(double x, double y, float angle) {
 		this.robotX = x;
 		this.robotY = y;
@@ -258,43 +276,53 @@ public class Robot {
     private void pivot(int time) {
         boolean leftStationary = motor1.getPower() == 0 && motor3.getPower() == 0;
         boolean rightStationary = motor2.getPower() == 0 && motor4.getPower() == 0;
-
+    
         double activePower = 0;
+        int directionMultiplier = 1;
+    
         if (leftStationary) {
+            // Right motors moving → pivot left (counterclockwise)
             activePower = ((motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) +
-                    (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1))) / 2;
-
+                           (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1))) / 2;
+            directionMultiplier = -1; // counterclockwise
         } else if (rightStationary) {
+            // Left motors moving → pivot right (clockwise)
             activePower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
-                    (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1))) / 2;
-
+                           (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1))) / 2;
+            directionMultiplier = 1; // clockwise
         } else {
-            return;
+            return; // not a pivot
         }
+    
         double rotation = (activePower * motor1.getCircumfice() * time) / (robotSize / 2.0);
-        robotAngle += Math.toDegrees(rotation);
+        robotAngle += directionMultiplier * Math.toDegrees(rotation);
         robotAngle %= 360;
         if (robotAngle < 0) {
             robotAngle += 360;
         }
     }
+    
 
     private void strafe(int time) {
+        // Calculate strafe power based on motor layout
         double strafePower = ((motor1.getPower() * (motor1.getDir() == Direction.FORWARD ? 1 : -1)) +
-                (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1))) -
-                ((motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) +
-                (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1)));
-
-        strafePower /= 4.0;
+                              (motor4.getPower() * (motor4.getDir() == Direction.FORWARD ? 1 : -1)) -
+                              (motor2.getPower() * (motor2.getDir() == Direction.FORWARD ? 1 : -1)) -
+                              (motor3.getPower() * (motor3.getDir() == Direction.FORWARD ? 1 : -1))) / 4.0;
+    
+        // Total distance to move in strafe direction
         double distance = strafePower * motor1.getCircumfice() * time;
-
+    
+        // Strafing direction is perpendicular to heading
         double angleRad = Math.toRadians(robotAngle + 90);
-        double dx = distance * Math.sin(angleRad);
-        double dy = distance * Math.cos(angleRad);
-
+    
+        double dx = distance * Math.cos(angleRad);
+        double dy = distance * Math.sin(angleRad);
+    
         robotX += dx;
         robotY += dy;
     }
+    
 	public String toString() {
 		return String.format("X: %.2f, Y: %.2f, Angle: %.2f°, Heading: %s", 
 			robotX, robotY, robotAngle, robotHeading);

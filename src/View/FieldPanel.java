@@ -17,13 +17,12 @@ public class FieldPanel extends JPanel {
         this.field = field;
         this.robot = robot;
         setBackground(Color.WHITE);;
-        
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // update the field dimensions based on the current size of the panel
         updateScale();
         Graphics2D g2d = (Graphics2D) g;
@@ -42,6 +41,7 @@ public class FieldPanel extends JPanel {
         // Convert inches to pixels based on the current scale
         return (int) (inches * scale);
     }
+
     private void drawField(Graphics2D g2) {
         g2.setColor(Color.LIGHT_GRAY);
         int step = toPixels(12); // Every foot
@@ -80,6 +80,7 @@ public class FieldPanel extends JPanel {
             g2.drawLine(0, y, toPixels(field.getWidthInInches()), y);
         }
     }
+
     private void drawRobot(Graphics2D g2d) {
         // Draw the robot
         double robotArea = robot.getRobotSize();
@@ -100,7 +101,7 @@ public class FieldPanel extends JPanel {
         g2d.fillRect(-sizeOffset, -sizeOffset, robotSizePixels, robotSizePixels);
 
         g2d.setColor(Color.RED);
-        g2d.drawLine(0, 0, 0, -sizeOffset);
+        g2d.drawLine(0, 0, sizeOffset, 0);
 
         g2d.setTransform(originalTransform);
     }
