@@ -6,16 +6,18 @@ public class Field {
     private int width;
     private int height;
     private Robot robot;
+    private Obstable obstable;
 
-    public Field(int width, int height, Robot robot ) {
+    public Field(int width, int height, Robot robot , Obstable obstable) {
         // Constructor for Field class
         this.width = width;
         this.height = height;
         this.robot = robot;
+        this.obstable = obstable;
     }
-    public Field(Robot robot) {
+    public Field(Robot robot, Obstable obstable) {
         // Constructor for Field class with default dimensions
-        this(144, 144, robot);
+        this(144, 144, robot, obstable);
     }
     public int getWidthInInches() {
         return width;
@@ -34,6 +36,12 @@ public class Field {
     }
     public void setRobot(Robot robot) {
         this.robot = robot;
+    }
+    public Obstable getObstable(){
+        return obstable;
+    }
+    public void setObstable(Obstable obstable){
+        this.obstable = obstable;
     }
     public void update(int timeStep){
         if (robot != null) {

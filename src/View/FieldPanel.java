@@ -2,6 +2,7 @@ package View;
 
 import javax.swing.JPanel;
 import Model.Field;
+import Model.Obstable;
 import Model.Robot;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,10 +13,12 @@ public class FieldPanel extends JPanel {
     private Field field;
     private double scale; // Scale factor for converting inches to pixels
     private final Robot robot;
+    private final Obstable obstable;
 
-    public FieldPanel(Field field, Robot robot) {
+    public FieldPanel(Field field, Robot robot, Obstable obstable) {
         this.field = field;
         this.robot = robot;
+        this.obstable = obstable;
         setBackground(Color.WHITE);;
     }
 
@@ -29,6 +32,7 @@ public class FieldPanel extends JPanel {
         drawField(g2d);
         drawGrid(g2d);
         drawRobot(g2d);
+        drawObs(g2d);
     }
 
     private void updateScale() {
@@ -102,6 +106,26 @@ public class FieldPanel extends JPanel {
 
         g2d.setColor(Color.RED);
         g2d.drawLine(0, 0, sizeOffset, 0);
+
+        g2d.setTransform(originalTransform);
+    }
+     private void drawObs(Graphics2D g2d) {
+        // Draw the robot
+        double obsArea = (double)obstable.getArea();
+        double obsSideLength = Math.sqrt(obsArea);
+
+        int obsSizePixels = toPixels(obsSideLength);
+        int robotX = toPixels(obstable.getObstableX());
+        int robotY = toPixels(obstable.getObstableY());
+
+        int sizeOffset = obsSizePixels / 2;
+
+        AffineTransform originalTransform = g2d.getTransform();
+
+        g2d.translate(robotX, robotY);
+
+        g2d.setColor(Color.RED);
+        g2d.fillRect(-sizeOffset, -sizeOffset, obsSizePixels, obsSizePixels);
 
         g2d.setTransform(originalTransform);
     }

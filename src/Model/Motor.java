@@ -13,7 +13,7 @@ public class Motor extends Wheel {
 	public Motor(Direction dir,double power, double radius ) {
 		super(radius);
 		this.dir = dir;
-		setPower(power);
+		this.power = power;
 	}
 
 	public double getPower() {
@@ -21,13 +21,6 @@ public class Motor extends Wheel {
 	}
 
 	public void setPower(double power) {
-		if (power < 0) {
-			this.power = 0;
-		} else if (power > 1) {
-			this.power = 1;
-		} else {
-			this.power = power;
-		}
 		this.power = power;
 	}
 

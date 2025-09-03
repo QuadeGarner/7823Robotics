@@ -6,6 +6,7 @@ import Model.Direction;
 import Model.Heading;
 import Model.Field;
 import Model.Motor;
+import Model.Obstable;
 import Model.Robot;
 import View.FieldPanel;
 import View.SidebarPanel; 
@@ -18,9 +19,11 @@ public class SimTester {
         Motor motor3 = new Motor(Direction.FORWARD, 1.0, 1.48);
         Motor motor4 = new Motor(Direction.FORWARD, 1.0, 1.48);
         Robot robot = new Robot(motor1, motor2, motor3, motor4, 16.0, 16.0, 0.0f, Heading.EAST, 265.0);
-        Field field = new Field(144, 144, robot); // Create a field with default dimensions
+        Obstable obs = new Obstable(24f,36f, 72,72);
+        Field field = new Field(144, 144, robot, obs); // Create a field with default dimensions
+        
 
-        FieldPanel fieldPanel = new FieldPanel(field, robot); // Create a field panel with the field and robot
+        FieldPanel fieldPanel = new FieldPanel(field, robot ,obs); // Create a field panel with the field and robot
         SidebarPanel sidebarPanel = new SidebarPanel(robot, fieldPanel); // Create a sidebar panel with the robot
 
         frame.add(fieldPanel); // Add the field panel to the frame
